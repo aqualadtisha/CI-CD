@@ -1,0 +1,46 @@
+stages:
+  - build
+  - style
+  - test
+  - deploy
+
+build job:
+  script:
+    - make -C src/cat/
+    - make -C src/grep/
+  after_script:
+    - bash src/not.sh
+  artifacts:
+    paths:
+      - src/cat/s21_cat
+      - src/grep/s21_grep
+    expire_in: 30 days
+  stage: build
+
+style job:
+  when: on_success
+  script:
+    - make check -C src/cat/
+    - make check -C src/grep/
+  after_script:
+    - bash src/not.sh
+  stage: style
+
+test job:
+  when: on_success
+  script:
+    - make test -C src/cat/
+    - make test -C src/grep/
+    - make clean -C src/cat/
+    - make clean -C src/grep/
+  after_script:
+    - bash src/not.sh
+  stage: test
+
+deploy job:
+  when: manual
+  script:
+    - bash src/script.sh
+  after_script:
+    - bash src/not.sh
+  stage: deploy

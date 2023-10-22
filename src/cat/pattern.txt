@@ -1,0 +1,6 @@
+test
+for
+CLEAN
+clean
+^#include
+for this for for for
